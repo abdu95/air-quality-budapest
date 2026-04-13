@@ -1,6 +1,6 @@
-# air-quality-tashkent
+# air-quality-budapest
 
-Problem statement (Tashkent air quality context, why it matters)
+Problem statement (Budapest air quality context, why it matters)
 Architecture diagram (simple ASCII or image)
 Tech stack table with explanation of each tool
 Step-by-step reproduction guide:
