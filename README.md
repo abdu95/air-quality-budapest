@@ -30,3 +30,47 @@ airquality-bp-dezoomcamp
 
 Create a bucket in GCS
 gs://airquality_bp_bucket
+
+
+Enabled Google Cloud Services
+Enabled BigQuery
+Enabled APIs and Services
+Enabled Compute Engine API
+Enabled Cloud Storage API
+Created a service account
+
+
+Create the VM.
+
+In the search bar type "Compute Engine" and click it
+Click Create Instance
+Configure it like this:
+
+Name: airflow-vm
+Region: europe-west3 (Frankfurt — close to Budapest)
+Machine type: e2-medium
+Boot disk: click Change → select Ubuntu 22.04 LTS → Select
+Boot disk size: change to 20 GB
+Firewall: check both Allow HTTP traffic and Allow HTTPS traffic
+
+
+Click Create
+
+SSH into the VM
+
+
+    sudo apt-get update
+    sudo apt-get install -y ca-certificates curl gnupg
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+    sudo groupadd docker
+    sudo usermod -aG docker $USER
+    newgrp docker
+    docker --version
+
