@@ -74,3 +74,14 @@ SSH into the VM
     newgrp docker
     docker --version
 
+    sudo apt-get install -y git
+    git clone https://github.com/abdu95/air-quality-budapest.git
+    cd air-quality-budapest
+
+    sudo apt-get install -y nano
+    nano gcp-key.json
+
+Copy paste json file content
+Ctrl + X => Y => Enter
+
+    echo "AIRFLOW_UID=50000" > .env
