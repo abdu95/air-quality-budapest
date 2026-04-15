@@ -15,3 +15,18 @@ Open Looker dashboard link
 
 
 Dashboard screenshot
+
+
+
+1. I tested openaq API and received data
+test_api_openaq_budapest.py
+
+2. I used Airflow in Docker to check how Airflow can fetch data from API and save in parquet
+get_airdata_openaq_dag.py
+
+3. Google Cloud
+Created project in Google Cloud Console
+airquality-bp-dezoomcamp
+
+Create a bucket in GCS
+gs://airquality_bp_bucket
