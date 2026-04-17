@@ -130,6 +130,8 @@ def load_to_bigquery(**context):
             type_=bigquery.TimePartitioningType.DAY,
             field="datetime_from",
         ),
+        clustering_fields=["parameter"],  # ← add this
+
     )
 
     table_ref = f"{PROJECT_ID}.{BQ_DATASET}.{BQ_TABLE}"

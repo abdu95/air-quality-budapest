@@ -46,12 +46,12 @@ In the search bar type "Compute Engine" and click it
 Click Create Instance
 Configure it like this:
 
-Name: airflow-vm
-Region: europe-west3 (Frankfurt — close to Budapest)
-Machine type: e2-medium
-Boot disk: click Change → select Ubuntu 22.04 LTS → Select
-Boot disk size: change to 20 GB
-Firewall: check both Allow HTTP traffic and Allow HTTPS traffic
+    Name: airflow-vm
+    Region: europe-west3 (Frankfurt — close to Budapest)
+    Machine type: e2-standard
+    Boot disk: click Change → select Ubuntu 22.04 LTS → Select
+    Boot disk size: change to 20 GB
+    Firewall: check both Allow HTTP traffic and Allow HTTPS traffic
 
 
 Click Create
@@ -85,3 +85,51 @@ Copy paste json file content
 Ctrl + X => Y => Enter
 
     echo "AIRFLOW_UID=50000" > .env
+    nano docker-compose.yaml
+
+
+Find the volumes: section (it already has dags, logs, plugins) and add two lines:
+yamlvolumes:
+    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
+    - ${AIRFLOW_PROJ_DIR:-.}/gcp-key.json:/opt/airflow/gcp-key.json  # ← add this
+
+
+Also add the environment variable so Google libraries can find the key. Find the environment: section and add:
+yamlenvironment:
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/gcp-key.json
+
+    docker compose up airflow-init
+
+    docker compose up -d
+
+
+Google console => Activate Shell > _
+
+    gcloud config set project airquality-bp-dezoomcamp
+
+    gcloud compute firewall-rules create allow-airflow \
+        --allow tcp:8080 \
+        --source-ranges 0.0.0.0/0 \
+        --description "Allow Airflow UI"
+
+
+Then get your VM's external IP — in Compute Engine page you can see it next to airflow-vm.
+Open in your browser:
+http://YOUR_VM_EXTERNAL_IP:8080
+Login with airflow / airflow as before.
+
+
+
+mart_aqi_daily (dbt) — partition by date, cluster by aqi_category
+    This is the table your dashboard queries. Dashboard will always filter by date range (temporal chart) and often by AQI category (categorical chart). 
+
+Raw measurements table (Airflow) — add clustering_fields=["parameter"]
+    This makes sense because every dbt query downstream will filter or group by parameter (you need to isolate pm25, no2, o3, pm10 separately to calculate sub-indices). One line change in your existing code:
+
+
+The raw measurements table is partitioned by datetime_from (day) and clustered by parameter. All downstream dbt queries filter on a date range and isolate individual pollutants — partitioning eliminates full table scans across time, clustering reduces data scanned when filtering by pollutant type.
+
+The mart_aqi_daily table is partitioned by measurement_date and clustered by aqi_category. The dashboard's temporal chart always queries a date range (partition pruning applies), and the categorical chart filters by AQI category (Good / Moderate / Poor etc.), which aligns directly with the cluster key.
