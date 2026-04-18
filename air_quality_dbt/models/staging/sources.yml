@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: openaq
+    database: airquality-bp-dezoomcamp
+    schema: air_quality_dataset
+    tables:
+      - name: measurements
+        description: "Raw hourly measurements ingested by Airflow from OpenAQ API"

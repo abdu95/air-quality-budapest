@@ -1,0 +1,11 @@
+air_quality:
+  target: prod
+  outputs:
+    prod:
+      type: bigquery
+      method: service-account
+      project: airquality-bp-dezoomcamp
+      dataset: air_quality_dataset
+      location: US
+      keyfile: /opt/airflow/gcp-key.json
+      threads: 4

@@ -135,3 +135,103 @@ The raw measurements table is partitioned by datetime_from (day) and clustered b
 The mart_aqi_daily table is partitioned by measurement_date and clustered by aqi_category. The dashboard's temporal chart always queries a date range (partition pruning applies), and the categorical chart filters by AQI category (Good / Moderate / Poor etc.), which aligns directly with the cluster key.
 
 Place your GCP service account key at gcp-key.json in the project root (not committed for security reasons)
+
+
+
+
+Step: dbt 
+    uv pip install dbt-bigquery
+    uv pip freeze > requirements.txt
+    dbt init air_quality_dbt
+
+```
+Db: bigquery
+authentication: Service Account
+keyfile: path
+project id: airquality-bp-dezoomcamp
+dataset: air_quality_dataset 
+threads: 4
+location: EU
+```
+
+profiles.yml 
+
+```
+air_quality_dbt:
+  outputs:
+    dev:
+      dataset: air_quality_dataset
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      keyfile: path\gcp-key.json
+      location: EU
+      method: service-account
+      priority: interactive
+      project: project_id
+      threads: 4
+      type: bigquery
+  target: dev
+```
+
+add to gitignore: 
+    # dbt
+    air_quality_dbt/target/
+    air_quality_dbt/dbt_packages/
+    air_quality_dbt/logs/
+
+    cd air_quality_dbt
+
+Test the connection
+    dbt debug 
+
+
+
+```yaml
+version: 2
+
+sources:
+  - name: openaq
+    database: airquality-bp-dezoomcamp
+    schema: air_quality_dataset
+    tables:
+      - name: measurements
+        description: "Raw hourly measurements ingested by Airflow from OpenAQ API"
+```
+
+Add packages.yml 
+    => dbt deps
+
+Create these models in these order: 
+    models/staging/stg_openaq__measurements.sql
+    models/intermediate/int_aqi_sub_indices.sql
+    models/mart/mart_aqi_daily.sql
+
+
+dbt_project.yml 
+
+```
+models:
+  air_quality_dbt:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    mart:
+      +materialized: table
+
+```
+
+
+
+
+LayerMaterialization Why
+stgviewIt's just a cleanup layer — no heavy logic, no aggregations. Keeping it as a view means no storage cost and it always reflects the latest raw data.
+
+intview Intermediate logic, not consumed directly by end users. View keeps it inspectable for debugging 
+
+marttableThis is what Power BI or any BI tool queries. You want it fast and pre-computed, not recalculated on every dashboard load.
+
+
+    dbt run --select staging
+    dbt run
+    dbt test
