@@ -133,3 +133,5 @@ Raw measurements table (Airflow) — add clustering_fields=["parameter"]
 The raw measurements table is partitioned by datetime_from (day) and clustered by parameter. All downstream dbt queries filter on a date range and isolate individual pollutants — partitioning eliminates full table scans across time, clustering reduces data scanned when filtering by pollutant type.
 
 The mart_aqi_daily table is partitioned by measurement_date and clustered by aqi_category. The dashboard's temporal chart always queries a date range (partition pruning applies), and the categorical chart filters by AQI category (Good / Moderate / Poor etc.), which aligns directly with the cluster key.
+
+Place your GCP service account key at gcp-key.json in the project root (not committed for security reasons)
