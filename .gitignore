@@ -19,3 +19,5 @@ gcp-key.json
 air_quality_dbt/target/
 air_quality_dbt/dbt_packages/
 air_quality_dbt/logs/
+
+logs/
