@@ -154,12 +154,15 @@ with DAG(
     load  = PythonOperator(task_id="load_to_bigquery", python_callable=load_to_bigquery)
 
     dbt_run = BashOperator(
-        task_id="dbt_run",
-        bash_command=(
-            "dbt run "
-            "--profiles-dir /opt/airflow "
-            "--project-dir /opt/airflow/dbt"
-        ),
+    task_id="dbt_run",
+    bash_command=(
+        "dbt run "
+        "--profiles-dir /opt/airflow "
+        "--project-dir /opt/airflow/dbt "
+        "--log-format text "
+        "--log-level info "
+        "2>&1"
+    ),
     )
 
     fetch >> save >> load >> dbt_run
