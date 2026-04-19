@@ -82,6 +82,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/data:/opt/airflow/data
     - ${AIRFLOW_PROJ_DIR:-.}/gcp-key.json:/opt/airflow/gcp-key.json
     - ${AIRFLOW_PROJ_DIR:-.}/air_quality_dbt:/opt/airflow/dbt
+    - ${AIRFLOW_PROJ_DIR:-.}/profiles.yml:/opt/airflow/profiles.yml
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
