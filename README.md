@@ -4,6 +4,9 @@ An end-to-end data engineering project that ingests real-time air quality measur
 
 **Live Dashboard →** https://datastudio.google.com/reporting/d0660706-1117-408b-b450-70088311e29f
 
+
+![Screenshot of a dashboard](img/dashboard_screenshot2.jpg)
+
 ---
 
 ## Problem Description
