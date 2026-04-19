@@ -7,7 +7,7 @@ hourly as (
         location_id,
         date(measured_from)                                    as measured_date,
         time(measured_from)                                    as measured_hour,
-
+        
         -- pivot pollutants into columns
         round(max(case when parameter = 'no2'  then sub_index end), 2)  as aqi_no2,
         round(max(case when parameter = 'o3'   then sub_index end), 2)  as aqi_o3,
@@ -22,6 +22,8 @@ hourly as (
 categorized as (
     select
         *,
+        datetime(measured_date, measured_hour)  as measured_datetime,   -- ← derived here
+
         case
             when aqi_score <= 25  then 'Good'
             when aqi_score <= 50  then 'Fair'
