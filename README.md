@@ -56,7 +56,7 @@ Looker Studio Dashboard  ◄─────────────────�
 
 ### Ingestion (Airflow)
 
-The DAG `get_airdata_openaq_dag` runs hourly. It calls the OpenAQ v2 measurements endpoint filtered to Budapest (`location_id` list), converts the JSON response to Parquet, uploads to GCS, and then loads into BigQuery using the `GCSToBigQueryOperator`.
+The DAG `openaq_dag.py` runs hourly. It calls the OpenAQ v2 measurements endpoint filtered to Budapest (`location_id` list), converts the JSON response to Parquet, uploads to GCS, and then loads data into BigQuery.
 
 **BigQuery table design — `measurements`**
 
@@ -76,7 +76,7 @@ models/
 ├── intermediate/
 │   └── int_aqi_sub_indices.sql        -- view: compute per-pollutant sub-indices
 └── mart/
-    └── mart_aqi_daily.sql             -- table: aggregate to daily AQI + category
+    └── mart_aqi_hourly.sql             -- table: aggregate to daily AQI + category
 ```
 
 **Materialisation rationale**
@@ -252,11 +252,15 @@ Find the external IP in the Compute Engine console next to `airflow-vm`.
 
 In the Airflow UI:
 
-1. Enable the `get_airdata_openaq_dag` DAG (toggle it on).
+1. Enable the `openaq_budapest_ingestion` DAG (toggle it on).
 2. Click the play button → **Trigger DAG**.
 3. Wait for all tasks to turn green.
 
 The DAG fetches measurements from the OpenAQ API, writes Parquet to GCS, and loads the data into `air_quality_dataset.measurements` in BigQuery.
+
+
+![Airflow screenshot](img/airflow_screenshot.jpg)
+
 
 ### 9. Run dbt transformations
 

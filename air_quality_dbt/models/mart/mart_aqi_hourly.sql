@@ -1,3 +1,16 @@
+{{
+    config(
+        materialized='table',
+        partition_by={
+            'field': 'measured_date',
+            'data_type': 'date',
+            'granularity': 'day'
+        },
+        cluster_by=['aqi_category']
+    )
+}}
+
+
 with sub as (
     select * from {{ ref('int_aqi_sub_indices') }}
 ),
