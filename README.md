@@ -302,11 +302,11 @@ dbt test           # run data quality tests
 
 After a successful `dbt run` you will see `mart_aqi_daily` materialised as a table in BigQuery.
 
-![Dbt screenshot](img/dbt_screenshot_1.pngdbt_screenshot_1.png)
+![Dbt screenshot](img/dbt_screenshot_1.png)
 
 ![Dbt screenshot](img/dbt_screenshot_2.png)
 
-![Dbt screenshot](img/dbt_screenshot_1.jpg)
+![Dbt screenshot](img/dbt_screenshot_3.jpg)
 
 
 ### 10. Open the dashboard

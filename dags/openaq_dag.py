@@ -9,6 +9,7 @@ from google.cloud import bigquery, storage
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 from airflow.models import Variable
 from openaq import OpenAQ
 
@@ -152,4 +153,13 @@ with DAG(
     save  = PythonOperator(task_id="save_to_gcs",      python_callable=save_to_gcs)
     load  = PythonOperator(task_id="load_to_bigquery", python_callable=load_to_bigquery)
 
-    fetch >> save >> load
+    dbt_run = BashOperator(
+        task_id="dbt_run",
+        bash_command=(
+            "dbt run "
+            "--profiles-dir /opt/airflow "
+            "--project-dir /opt/airflow/dbt"
+        ),
+    )
+
+    fetch >> save >> load >> dbt_run
