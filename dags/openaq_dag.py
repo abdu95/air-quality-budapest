@@ -157,9 +157,8 @@ with DAG(
         task_id="dbt_run",
         bash_command=(
             "cd /opt/airflow/dbt && "
-            "dbt deps --profiles-dir /opt/airflow && "
-            "dbt run --profiles-dir /opt/airflow "
-            "--log-format text --log-level info 2>&1"
+            "/home/airflow/.local/bin/dbt deps --profiles-dir /opt/airflow && "
+            "/home/airflow/.local/bin/dbt run --profiles-dir /opt/airflow 2>&1"
         ),
     )
 
