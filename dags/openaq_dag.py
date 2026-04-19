@@ -156,10 +156,7 @@ with DAG(
     dbt_run = BashOperator(
         task_id="dbt_run",
         bash_command=(
-            "echo HOME=$HOME && "
-            "echo PATH=$PATH && "
             "cd /opt/airflow/dbt && "
-            "dbt deps --profiles-dir /opt/airflow && "
             "dbt run --profiles-dir /opt/airflow 2>&1"
         ),
     )
